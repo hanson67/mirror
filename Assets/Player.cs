@@ -10,6 +10,7 @@ public class Player : Dummy
 {
     public float speed;
     public float hide_time;
+    public GameObject bullet;
 
     bool hide;
     bool attack_delay;
@@ -17,8 +18,6 @@ public class Player : Dummy
     Canvas PlayerCanvas;
     SpriteRenderer spriterenderer;
     Transform hide_bar;
-
-    IEnumerator IEAttackCool;
     void Start()
     {
         health = 5;
@@ -33,7 +32,6 @@ public class Player : Dummy
     }
     void Update()
     {
-        Debug.DrawRay(transform.position, Vector2.right, Color.yellow);
         Hide();
         Attack();
     }
@@ -79,16 +77,17 @@ public class Player : Dummy
     }
     void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.C) & IEAttackCool == null)
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            Vector2 raypos = new Vector2 (transform.position.x, transform.position.y+0.25f);
-            Vector2 raydir = spriterenderer.flipX ? Vector2.left : Vector2.right;
-            RaycastHit2D target = Physics2D.Raycast(raypos, raydir, 1.0f, LayerMask.GetMask("Enemy"));
-            if (target & attack_delay == false)
+            if (attack_delay)
             {
-                target.transform.GetComponent<Dummy>().Hitted();
-                StartCoroutine(AttackCool());
+                return;
             }
+            Vector2 bulpos = new Vector2(transform.position.x, transform.position.y + 0.4f);
+            Vector2 buldir = spriterenderer.flipX ? Vector2.left : Vector2.right;
+            float angle = Mathf.Atan2(buldir.x, buldir.y) * Mathf.Rad2Deg;
+            StartCoroutine(AttackCool());
+            Instantiate(bullet, bulpos, Quaternion.Euler(0, angle + 90, 0));
         }
     }
     IEnumerator AttackCool()

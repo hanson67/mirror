@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Dummy : MonoBehaviour
@@ -10,7 +11,11 @@ public class Dummy : MonoBehaviour
         get {  return _health; }
         set {
             if (_health > 1) _health = value;
-            else { Die(); }
+            else 
+            {
+                if(gameObject.tag != "Player")
+                StartCoroutine(Die()); 
+            }
             }
     }
     public void Hitted()
@@ -28,8 +33,20 @@ public class Dummy : MonoBehaviour
     {
         
     }
-    void Die()
+    IEnumerator Die()
     {
+        Vector3 direction = (transform.position.x - GameManager.Instance.Player.transform.position.x) * Vector2.right;
+        direction.Normalize();
+
+        float elapsed = 0f;
+
+        while (elapsed < 3)
+        {
+            transform.position += direction * 5 * Time.deltaTime;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
         Destroy(gameObject);
     }
 }
