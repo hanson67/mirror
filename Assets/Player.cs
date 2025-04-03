@@ -13,6 +13,11 @@ public class Player : Dummy
     public GameObject bullet;
 
     bool hide;
+
+    public bool GetHide()
+    {
+        return hide;
+    }
     bool attack_delay;
 
     Canvas PlayerCanvas;
@@ -20,7 +25,7 @@ public class Player : Dummy
     Transform hide_bar;
     void Start()
     {
-        health = 5;
+        health = 3;
         PlayerCanvas = GetComponentInChildren<Canvas>();
         spriterenderer = GetComponent<SpriteRenderer>();
         hide_bar = PlayerCanvas.gameObject.transform.Find("hide_bar");
@@ -83,7 +88,7 @@ public class Player : Dummy
             {
                 return;
             }
-            Vector2 bulpos = new Vector2(transform.position.x, transform.position.y + 0.4f);
+            Vector2 bulpos = new Vector2(transform.position.x, transform.position.y + 0.65f);
             Vector2 buldir = spriterenderer.flipX ? Vector2.left : Vector2.right;
             float angle = Mathf.Atan2(buldir.x, buldir.y) * Mathf.Rad2Deg;
             StartCoroutine(AttackCool());

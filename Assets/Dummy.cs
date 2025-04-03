@@ -5,16 +5,21 @@ using UnityEngine;
 
 public class Dummy : MonoBehaviour
 {
-    int _health = 5;
+    int _health = 3;
     public int health
     {
         get {  return _health; }
         set {
-            if (_health > 1) _health = value;
-            else 
+            if (_health > 1)
             {
-                if(gameObject.tag != "Player")
-                StartCoroutine(Die()); 
+                _health = value;
+                
+            }
+            else
+            {
+                if (gameObject.tag != "Player")
+                    StartCoroutine(Die());
+                else Debug.Log("stop");
             }
             }
     }

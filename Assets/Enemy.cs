@@ -18,6 +18,7 @@ public class Enemy : Dummy
     void Start()
     {
         health = 1;
+        spriterenderer = GetComponent<SpriteRenderer>();
 
     }
     void FixedUpdate()
@@ -31,30 +32,25 @@ public class Enemy : Dummy
     }
     void Trace()
     {
-        float movedir = Input.GetAxisRaw("Horizontal");
-        if (movedir < 0) spriterenderer.flipX = true;
-        else if (movedir > 0) spriterenderer.flipX = false;
+        if (attack_delay || GameManager.Instance.Player.GetHide())
+        {
+            return;
+        }
+        float movedir = GameManager.Instance.Player.transform.position.x - transform.position.x;
+        if (Mathf.Abs(movedir) < 1) { Attack(); }
+        if (movedir < 0) { spriterenderer.flipX = true; movedir = -1; }
+        else if (movedir > 0) { spriterenderer.flipX = false; movedir = 1; }
+        else movedir = 0;
         transform.position += new Vector3(movedir, 0, 0) * speed * Time.deltaTime;
     }
     void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            if (attack_delay)
-            {
-                return;
-            }
-            Vector2 raypos = new Vector2 (transform.position.x, transform.position.y+0.25f);
-            Vector2 raydir = spriterenderer.flipX ? Vector2.left : Vector2.right;
-            float angle = Mathf.Atan2(raydir.x, raydir.y) * Mathf.Rad2Deg;
-            RaycastHit2D target = Physics2D.Raycast(raypos, raydir, 1.0f, LayerMask.GetMask("Enemy"));
-            if (target)
-            {
-                target.transform.GetComponent<Dummy>().Hitted();
-            }
-            StartCoroutine(AttackCool());
-            Instantiate(attack_particle, transform.position, Quaternion.Euler(0, angle+90,0));
-        }
+        Vector2 pos = new Vector2(transform.position.x, transform.position.y + 0.65f);
+        Vector2 raydir = spriterenderer.flipX ? Vector2.left : Vector2.right;
+        float angle = Mathf.Atan2(raydir.x, raydir.y) * Mathf.Rad2Deg;
+        GameManager.Instance.Player.transform.GetComponent<Dummy>().Hitted();
+        StartCoroutine(AttackCool());
+        Instantiate(attack_particle, pos, Quaternion.Euler(0, angle+90,0));
     }
     IEnumerator AttackCool()
     {

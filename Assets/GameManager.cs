@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -30,9 +31,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameObject Player;
+    public event Action OnHitted;
+    public void Hitted()
+    {
+        OnHitted?.Invoke();
+    }
+    public Player Player;
+    [Header("=== UI ===")]
+    public GameObject health_bar;
     private void Start()
     {
-        Player = GameObject.FindWithTag("Player");
+        Player = FindAnyObjectByType<Player>();
+    }
+    void HealthUpdate()
+    {
+        if (health_bar.transform.childCount != Player.health)
+        {
+            
+        }
     }
 }
