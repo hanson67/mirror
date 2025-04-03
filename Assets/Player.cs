@@ -9,8 +9,11 @@ using UnityEngine.UI;
 public class Player : Dummy
 {
     public float speed;
+    public float hide_time;
 
     bool hide;
+    bool attack_delay;
+
     Canvas PlayerCanvas;
     SpriteRenderer spriterenderer;
     Transform hide_bar;
@@ -45,7 +48,7 @@ public class Player : Dummy
     public float hide_elasped 
     {
         get { return _hide_elasped; }
-        set { _hide_elasped = value; hide_bar.GetComponent<Image>().fillAmount = value; } 
+        set { _hide_elasped = value; hide_bar.GetComponent<Image>().fillAmount = value/hide_time; } 
     }
     void Hide()
     {
@@ -54,7 +57,7 @@ public class Player : Dummy
             if(Physics2D.Raycast(new Vector2(transform.position.x-1, transform.position.y), Vector2.right, 2.0f, LayerMask.GetMask("Hiding")) )
             {
                 hide_elasped += Time.deltaTime;
-                if (hide_elasped > 1)
+                if (hide_elasped > hide_time)
                 {
                     spriterenderer.enabled = false;
                     hide_bar.gameObject.SetActive(false);
@@ -81,18 +84,18 @@ public class Player : Dummy
             Vector2 raypos = new Vector2 (transform.position.x, transform.position.y+0.25f);
             Vector2 raydir = spriterenderer.flipX ? Vector2.left : Vector2.right;
             RaycastHit2D target = Physics2D.Raycast(raypos, raydir, 1.0f, LayerMask.GetMask("Enemy"));
-            if (target)
+            if (target & attack_delay == false)
             {
                 target.transform.GetComponent<Dummy>().Hitted();
-                IEAttackCool = AttackCool();
-                StartCoroutine(IEAttackCool);
+                StartCoroutine(AttackCool());
             }
         }
     }
     IEnumerator AttackCool()
     {
+        attack_delay = true;
         yield return new WaitForSeconds(1.0f);
-        IEAttackCool = null;
+        attack_delay = false;
     }
 
     // Update is called once per frame
