@@ -1,25 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player : Dummy
 {
     public float speed;
-    public int health = 5;
 
     bool hide;
     Canvas PlayerCanvas;
+    SpriteRenderer spriterenderer;
     Transform hide_bar;
+
+    IEnumerator IEAttackCool;
     void Start()
     {
+        health = 5;
         PlayerCanvas = GetComponentInChildren<Canvas>();
+        spriterenderer = GetComponent<SpriteRenderer>();
         hide_bar = PlayerCanvas.gameObject.transform.Find("hide_bar");
+    }
+    void FixedUpdate()
+    {
+        if (!hide)
+            Move();
+    }
+    void Update()
+    {
+        Debug.DrawRay(transform.position, Vector2.right, Color.yellow);
+        Hide();
+        Attack();
     }
     void Move()
     {
-        transform.position += new Vector3(Input.GetAxis("Horizontal"), 0, 0) * speed * Time.deltaTime;
+        float movedir = Input.GetAxisRaw("Horizontal");
+        if (movedir < 0) spriterenderer.flipX = true;
+        else if (movedir > 0) spriterenderer.flipX = false;
+        transform.position += new Vector3(movedir, 0, 0) * speed * Time.deltaTime;
     }
     float _hide_elasped;
     public float hide_elasped 
@@ -36,7 +56,7 @@ public class Player : MonoBehaviour
                 hide_elasped += Time.deltaTime;
                 if (hide_elasped > 1)
                 {
-                    transform.GetComponent<SpriteRenderer>().enabled = false;
+                    spriterenderer.enabled = false;
                     hide_bar.gameObject.SetActive(false);
                     hide = true;
                 }
@@ -49,21 +69,32 @@ public class Player : MonoBehaviour
         else if(hide & Input.GetAxisRaw("Vertical") > 0)
         {
             hide_elasped = 0;
-            transform.GetComponent<SpriteRenderer>().enabled = true;
+            spriterenderer.enabled = true;
             hide_bar.gameObject.SetActive(true);
             hide = false;
         }
     }
+    void Attack()
+    {
+        if (Input.GetKeyDown(KeyCode.C) & IEAttackCool == null)
+        {
+            Vector2 raypos = new Vector2 (transform.position.x, transform.position.y+0.25f);
+            Vector2 raydir = spriterenderer.flipX ? Vector2.left : Vector2.right;
+            RaycastHit2D target = Physics2D.Raycast(raypos, raydir, 1.0f, LayerMask.GetMask("Enemy"));
+            if (target)
+            {
+                target.transform.GetComponent<Dummy>().Hitted();
+                IEAttackCool = AttackCool();
+                StartCoroutine(IEAttackCool);
+            }
+        }
+    }
+    IEnumerator AttackCool()
+    {
+        yield return new WaitForSeconds(1.0f);
+        IEAttackCool = null;
+    }
 
     // Update is called once per frame
-    void FixedUpdate()
-    {
-        if(!hide)
-        Move();
-    }
-    void Update()
-    {
-        Debug.DrawRay(transform.position, Vector2.right, new Color(0,1,0));
-        Hide();
-    }
+
 }
