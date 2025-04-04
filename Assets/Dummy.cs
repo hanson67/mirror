@@ -10,12 +10,11 @@ public class Dummy : MonoBehaviour
     {
         get {  return _health; }
         set {
-            if (_health > 1)
+            if (_health >= 1)
             {
                 _health = value;
-                
             }
-            else
+            if (_health == 0)
             {
                 if (gameObject.tag != "Player")
                     StartCoroutine(Die());
@@ -23,7 +22,7 @@ public class Dummy : MonoBehaviour
             }
             }
     }
-    public void Hitted()
+    public void ReduceHealth()
     {
         health--;
     }
@@ -47,7 +46,7 @@ public class Dummy : MonoBehaviour
 
         while (elapsed < 3)
         {
-            transform.position += direction * 5 * Time.deltaTime;
+            transform.position += direction * 10 * Time.deltaTime;
             elapsed += Time.deltaTime;
             yield return null;
         }

@@ -40,7 +40,6 @@ public class Enemy : Dummy
         if (Mathf.Abs(movedir) < 1) { Attack(); }
         if (movedir < 0) { spriterenderer.flipX = true; movedir = -1; }
         else if (movedir > 0) { spriterenderer.flipX = false; movedir = 1; }
-        else movedir = 0;
         transform.position += new Vector3(movedir, 0, 0) * speed * Time.deltaTime;
     }
     void Attack()
@@ -48,7 +47,8 @@ public class Enemy : Dummy
         Vector2 pos = new Vector2(transform.position.x, transform.position.y + 0.65f);
         Vector2 raydir = spriterenderer.flipX ? Vector2.left : Vector2.right;
         float angle = Mathf.Atan2(raydir.x, raydir.y) * Mathf.Rad2Deg;
-        GameManager.Instance.Player.transform.GetComponent<Dummy>().Hitted();
+        GameManager.Instance.Player.transform.GetComponent<Dummy>().ReduceHealth();
+        GameManager.Instance.OnHitted();
         StartCoroutine(AttackCool());
         Instantiate(attack_particle, pos, Quaternion.Euler(0, angle+90,0));
     }
