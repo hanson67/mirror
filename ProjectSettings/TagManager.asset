@@ -16,7 +16,7 @@ TagManager:
   - Hiding
   - Enemy
   - Exam
-  - 
+  - Player
   - 
   - 
   - 
@@ -42,6 +42,18 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BackGround
+    uniqueID: 3936464523
+    locked: 0
+  - name: Ground
+    uniqueID: 4057423887
+    locked: 0
+  - name: Player
+    uniqueID: 2286723139
+    locked: 0
+  - name: OverGround
+    uniqueID: 1167311323
     locked: 0
   - name: Cover
     uniqueID: 1665954131

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     private static GameManager instance = null;
-
     void Awake()
     {
         if (null == instance)
@@ -45,6 +44,7 @@ public class GameManager : MonoBehaviour
     public GameObject hittedUIparticle;
     public GameObject DialogFrame;
     public GameObject UsingItemUI;
+    public GameObject ReadableImage;
     private void Start()
     {
         Player = FindAnyObjectByType<Player>();

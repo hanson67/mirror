@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UsingItem : MonoBehaviour
 {
-    void UseItem()
+    public void UseItem()
     {
-        if (InventoryManager.Instance.Inventory[transform.GetSiblingIndex()] is Story)
+        if (GameManager.movable) return;
+        Item i = InventoryManager.Instance.Inventory[transform.GetSiblingIndex()];
+        if (i is Story)
         {
             Debug.Log("¿Ãµø");
         }
-        else if(InventoryManager.Instance.Inventory[transform.GetSiblingIndex()] is Readable)
+        else if(i is Readable readable)
         {
-
+            GameManager.Instance.ReadableImage.GetComponent<ReadableImage>().ReadableImages = readable.ReadableSprite;
+            GameManager.Instance.ReadableImage.SetActive(true);
         }
     }
 }

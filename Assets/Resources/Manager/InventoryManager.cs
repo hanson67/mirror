@@ -68,8 +68,4 @@ public class InventoryManager : MonoBehaviour
                 GameManager.Instance.inventory.transform.GetChild(i).GetComponent<Image>().sprite = Inventory[i].sprite;
         }
     }
-    private void Update()
-    {
-
-    }
 }

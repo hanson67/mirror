@@ -18,7 +18,11 @@ public class Dummy : MonoBehaviour
             {
                 if (gameObject.tag != "Player")
                     StartCoroutine(Die());
-                else Debug.Log("stop");
+                else
+                {
+                    Application.Quit();
+                    UnityEditor.EditorApplication.isPlaying = false;
+                }
             }
             }
     }

@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -6,6 +7,7 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 
@@ -16,7 +18,6 @@ public class Player : Dummy
     public GameObject bullet;
 
     bool hide;
-
     public bool GetHide()
     {
         return hide;
@@ -33,6 +34,16 @@ public class Player : Dummy
         spriterenderer = GetComponent<SpriteRenderer>();
         hide_bar = PlayerCanvas.gameObject.transform.Find("hide_bar");
     }
+    private void OnEnable()
+    {
+        CinemachineVirtualCamera VC = FindAnyObjectByType<CinemachineVirtualCamera>();
+        VC.m_Follow = transform;
+        if(LoadingSceneManager.Instance.currentscene != null)
+        {
+            Vector3 pos = GameObject.Find(LoadingSceneManager.Instance.currentscene).transform.position;
+            GameManager.Instance.Player.transform.position = pos;
+        }
+    }
     void FixedUpdate()
     {
         if (!hide & GameManager.movable)
@@ -40,11 +51,11 @@ public class Player : Dummy
     }
     void Update()
     {
+        UseItem();
         if (!GameManager.movable) return;
         Hide();
         Attack();
         Examine();
-        UseItem();
     }
     void Move()
     {
@@ -90,7 +101,8 @@ public class Player : Dummy
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
-            if (attack_delay)
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, spriterenderer.flipX? Vector2.left : Vector2.right, 8.0f, LayerMask.GetMask("Enemy"));
+            if (attack_delay || !hit)
             {
                 return;
             }
@@ -115,8 +127,8 @@ public class Player : Dummy
             if (hit)
             {
                 Item i = Resources.Load<Item>($"Item/{hit.transform.name}");
+                Debug.Log(i.name);
                 GameManager.Instance.DialogFrame.gameObject.SetActive(true);
-                Debug.Log(GameManager.Instance.DialogFrame.transform.GetChild(0).name);
                 GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{i.itemname}À» È¹µæÇÏ¿´½À´Ï´Ù.";
                 GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => EndExamineDialog(i));
                 GameManager.movable = false;
@@ -138,6 +150,12 @@ public class Player : Dummy
             GameManager.movable = false;
             GameManager.Instance.UsingItemUI.gameObject.SetActive(true);
             InventoryManager.Instance.OnUsingItem();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.movable = true;
+            GameManager.Instance.UsingItemUI.SetActive(false);
+            GameManager.Instance.ReadableImage.SetActive(false);
         }
     }
 }
