@@ -38,9 +38,10 @@ public class Player : Dummy
     {
         CinemachineVirtualCamera VC = FindAnyObjectByType<CinemachineVirtualCamera>();
         VC.m_Follow = transform;
-        if(LoadingSceneManager.Instance.currentscene != null)
+        if(LoadingSceneManager.Instance?.currentscene != null)
         {
-            Vector3 pos = GameObject.Find(LoadingSceneManager.Instance.currentscene).transform.position;
+            Transform obj = GameObject.Find(LoadingSceneManager.Instance.currentscene).transform;
+            Vector3 pos = obj.childCount > 0 ? obj.GetChild(0).position : obj.position;
             GameManager.Instance.Player.transform.position = pos;
         }
     }
