@@ -33,7 +33,7 @@ public class LoadingSceneManager : MonoBehaviour
     public string nextscene;
     
     Image progressbar;
-    public void LoadScene(string scenename)
+    public void loadScene(string scenename)
     {
         currentscene = SceneManager.GetActiveScene().name;
         nextscene = scenename;
@@ -42,9 +42,9 @@ public class LoadingSceneManager : MonoBehaviour
         {
             GameManager.Instance.transform.GetChild(i).gameObject.SetActive(false);
         }
-        StartCoroutine(LoadScene());
+        StartCoroutine(loadScene());
     }
-    IEnumerator LoadScene()
+    IEnumerator loadScene()
     {
         yield return null;
         AsyncOperation op = SceneManager.LoadSceneAsync(nextscene);

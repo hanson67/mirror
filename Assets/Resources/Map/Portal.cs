@@ -7,10 +7,10 @@ public class Portal : MonoBehaviour
     public bool press;
     private void Update()
     {
-        PortalEnter();
+        portalEnter();
 
     }
-    void PortalEnter()
+    void portalEnter()
     {
         if (!GameManager.movable) return;
         if (Input.GetKeyDown(KeyCode.C) || !press)
@@ -18,7 +18,7 @@ public class Portal : MonoBehaviour
             Vector2 pos = new Vector2(transform.position.x - 0.5f, transform.position.y+0.65f);
             if (Physics2D.Raycast(pos, Vector2.right, 1, LayerMask.GetMask("Player")))
             {
-                LoadingSceneManager.Instance.LoadScene(gameObject.name);
+                LoadingSceneManager.Instance.loadScene(gameObject.name);
             }
             
         }

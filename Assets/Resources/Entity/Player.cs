@@ -52,7 +52,7 @@ public class Player : Dummy
     }
     void Update()
     {
-        UseItem();
+        useItem();
         if (!GameManager.movable) return;
         Hide();
         Attack();
@@ -110,11 +110,11 @@ public class Player : Dummy
             Vector2 bulpos = new Vector2(transform.position.x, transform.position.y + 0.65f);
             Vector2 buldir = spriterenderer.flipX ? Vector2.left : Vector2.right;
             float angle = Mathf.Atan2(buldir.x, buldir.y) * Mathf.Rad2Deg;
-            StartCoroutine(AttackCool());
+            StartCoroutine(attackCool());
             Instantiate(bullet, bulpos, Quaternion.Euler(0, angle + 90, 0));
         }
     }
-    IEnumerator AttackCool()
+    IEnumerator attackCool()
     {
         attack_delay = true;
         yield return new WaitForSeconds(1.0f);
@@ -131,20 +131,20 @@ public class Player : Dummy
                 Debug.Log(i.name);
                 GameManager.Instance.DialogFrame.gameObject.SetActive(true);
                 GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{i.itemname}À» È¹µæÇÏ¿´½À´Ï´Ù.";
-                GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => EndExamineDialog(i));
+                GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => endExamineDialog(i));
                 GameManager.movable = false;
                 hit.transform.gameObject.layer = LayerMask.GetMask("Default");
             }
         }
     }
-    void EndExamineDialog(Item item)
+    void endExamineDialog(Item item)
     {
         GameManager.Instance.DialogFrame.gameObject.SetActive(false);
         GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.RemoveAllListeners();
         GameManager.movable = true;
         InventoryManager.Instance.OnGetItem(item);
     }
-    void UseItem()
+    void useItem()
     {
         if (Input.GetKeyDown(KeyCode.X) & GameManager.movable)
         {
