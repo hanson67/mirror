@@ -30,20 +30,21 @@ public class NPCInteraction : MonoBehaviour
     private void Update()
     {
         interAction();
+        Debug.DrawRay(transform.position, 3*Vector2.left);
     }
     void interAction()
     {
         if (npcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C))
         {
-            if (uiInstance != null)
-                Destroy(uiInstance);
-            StartDialogue();
-            Vector2 pos = new Vector2(transform.position.x-2, transform.position.y);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right, 4.0f, LayerMask.GetMask("NPC"));
+            Vector2 pos = new Vector2(transform.position.x - 3, transform.position.y+0.65f);
+            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right, 6.0f, LayerMask.GetMask("Player"));
             if (!hit)
             {
                 return;
             }
+            if (uiInstance != null)
+                Destroy(uiInstance);
+            StartDialogue();
             if (npcState == NPCState.ReadyToTalk)
             {
                 GameObject canvas = GameObject.Find("TestCanvas");

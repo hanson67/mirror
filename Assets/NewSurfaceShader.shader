@@ -6,6 +6,11 @@ Shader "Custom/NewSurfaceShader"
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
+
+        _R("R", Range(0,1)) = 1
+        _G("G", Range(0,1)) = 1
+        _B("B", Range(0,1)) = 1
+
     }
     SubShader
     {

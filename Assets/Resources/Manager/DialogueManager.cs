@@ -83,6 +83,7 @@ public class DialogueManager : MonoBehaviour
             Debug.LogError("존재하지 않는 아이디임, 아이디 번호 : " + dialogueId);
             return;
         }
+        GameManager.movable = false;
 
         currentDialogueId = dialogueId;
         currentSentenceIndex = 0;
@@ -223,5 +224,6 @@ public class DialogueManager : MonoBehaviour
     void EndDialogue()
     {
         dialoguePanel.SetActive(false);
+        GameManager.movable = true;
     }
 }
