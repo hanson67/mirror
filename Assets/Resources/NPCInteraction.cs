@@ -34,31 +34,36 @@ public class NPCInteraction : MonoBehaviour
     }
     void interAction()
     {
+        Vector2 pos = new Vector2(transform.position.x - 3, transform.position.y + 0.65f);
+        RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right, 6.0f, LayerMask.GetMask("Player"));
+        if (!hit)
+        {
+            if (npcState == NPCState.Idle)
+                npcState = NPCState.HasTalked;
+                BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
+                bubbleChat.removeBubble();
+            return;
+        }
+        bubbleInterAction();
         if (npcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C))
         {
-            Vector2 pos = new Vector2(transform.position.x - 3, transform.position.y+0.65f);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right, 6.0f, LayerMask.GetMask("Player"));
-            if (!hit)
-            {
-                return;
-            }
+            GameObject canvas = GameObject.Find("TestCanvas");
+            uiInstance = Instantiate(uiPrefab, canvas.transform);
+            uiInstance.transform.position = gameObject.transform.position + new Vector3(0, 2f, 0);
             if (uiInstance != null)
                 Destroy(uiInstance);
             StartDialogue();
-            if (npcState == NPCState.ReadyToTalk)
+        }
+    }
+    void bubbleInterAction()
+    {
+        if (npcState == NPCState.HasTalked)
+        {
+            if (fixedDialogue != null)
             {
-                GameObject canvas = GameObject.Find("TestCanvas");
-                uiInstance = Instantiate(uiPrefab, canvas.transform);
-                uiInstance.transform.position = gameObject.transform.position + new Vector3(0, 2f, 0);
-                Debug.Log("test1");
-            }
-            else if (npcState == NPCState.HasTalked)
-            {
-                if (fixedDialogue != null)
-                {
-                    BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
-                    bubbleChat.showBubble(GameObject.Find("TestCanvas"), gameObject, fixedDialogue);
-                }
+                BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
+                bubbleChat.showBubble(fixedDialogue);
+                npcState = NPCState.Idle;
             }
         }
     }
@@ -84,24 +89,6 @@ public class NPCInteraction : MonoBehaviour
     //        }
     //    }
     //}
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerNear = false;
-            if (uiInstance != null)
-            {
-                Destroy(uiInstance);
-            }
-            if (fixedDialogue != null)
-            {
-                BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
-                bubbleChat.removeBubble(gameObject);
-            }
-        }
-    }
-
     void StartDialogue()
     {
         Debug.Log("대화 시작");

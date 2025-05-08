@@ -9,19 +9,18 @@ public class BubbleChat : MonoBehaviour
      public GameObject bubblePrefab;
      private GameObject uiInstance;
 
-     public void showBubble(GameObject canvas,GameObject entity, string text)
+     public void showBubble(string text)
      {
           if (count < 2) // 2번만 실행되고 꺼지게 해달라네요 굳굳 :) 
           {
-               uiInstance = Instantiate(bubblePrefab, canvas.transform);
-               uiInstance.transform.position = gameObject.transform.position + new Vector3(0, 2f, 0);
-               bubblePrefab.GetComponentInChildren<Text>().text = text;
-               Debug.Log(count);
+               uiInstance = Instantiate(bubblePrefab, gameObject.transform);
+               uiInstance.transform.position = gameObject.transform.position + new Vector3(0, 3f, 0);
+               bubblePrefab.GetComponentInChildren<TextMesh>().text = text;
                count++;
           }
      }
 
-     public void removeBubble(GameObject entity)
+     public void removeBubble()
      {
           if (uiInstance != null)
           {
