@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor.Build;
@@ -14,6 +15,7 @@ public class DialogueData
     public string illustration;
     public List<int> conditions;
     public List<int> useditems;
+    public string debug;
     public List<string> sentences;
     public List<Choice> choices;
 }
@@ -88,6 +90,20 @@ public class DialogueManager : MonoBehaviour
         }
 
     }
+    public void alertDebug(int dialogueId)
+    {
+        if (dialogueDict[dialogueId].debug == null) return;
+        GameManager.Instance.DialogFrame.gameObject.SetActive(true);
+        GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{dialogueDict[dialogueId].debug}";
+        GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => endAlertDebug());
+        GameManager.movable = false;
+    }
+    void endAlertDebug()
+    {
+        GameManager.Instance.DialogFrame.gameObject.SetActive(false);
+        GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.RemoveAllListeners();
+        GameManager.movable = true;
+    }
     public bool StartDialogue(int dialogueId)
     {
         if (!dialogueDict.ContainsKey(dialogueId))
@@ -97,15 +113,21 @@ public class DialogueManager : MonoBehaviour
         foreach (int condition in dialogueDict[dialogueId].conditions)
         {
             if (!StoryManager.Instance.dialogueRed[condition])
+            {
+                alertDebug(dialogueId);
                 return false;
+            }
         }
         foreach (int useditem in dialogueDict[dialogueId].useditems)
         {
             if (!StoryManager.Instance.itemUsed[useditem])
+            {
+                alertDebug(dialogueId);
                 return false;
+            }
         }
         GameManager.movable = false;
-
+        illustrationImage.gameObject.SetActive(false);
         currentDialogueId = dialogueId;
         currentSentenceIndex = 0;
 
@@ -113,18 +135,6 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(true);
         npcDialogueBox.SetActive(true);
         choicePanel.SetActive(false);
-
-        if (!string.IsNullOrEmpty(dialogue.illustration))
-        {
-            Sprite illust = Resources.Load<Sprite>(dialogue.illustration);
-            illustrationImage.sprite = illust;
-            illustrationImage.gameObject.SetActive(illust != null);
-        }
-        else
-        {
-            illustrationImage.gameObject.SetActive(false);
-        }
-
         if (dialogue.sentences == null || dialogue.sentences.Count == 0)
         {
             ShowChoices(dialogue);
@@ -205,6 +215,14 @@ public class DialogueManager : MonoBehaviour
     {
         DialogueData dialogue = dialogueDict[currentDialogueId];
         string sentence = dialogue.sentences[currentSentenceIndex];
+        if (sentence.Contains("<사진>"))
+        {
+            string[] sentences = sentence.Split("<사진>");
+            sentence= sentences[0];
+            Sprite illust = Resources.Load<Sprite>($"Illustrations/{sentences[1]}");
+            illustrationImage.sprite = illust;
+            illustrationImage.gameObject.SetActive(illust != null);
+        }
         if (!(sentence.Contains("<알림>")))
         {
             string[] sentences = sentence.Split("</이름>");
@@ -219,7 +237,6 @@ public class DialogueManager : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(TextRepeater(sentence, "alert"));
         }
-        
     }
 
     void ShowChoices(DialogueData dialogue)

@@ -44,7 +44,13 @@ public class InventoryManager : MonoBehaviour
     event Action<int> UsingItemHandler;
     public void OnUsingItem(int i)
     {
-        UsingItemHandler?.Invoke(i);
+        if (Inventory[i] is Consumable)
+            UsingItemHandler?.Invoke(i);
+        else if (Inventory[i] is Readable readable)
+            {
+                GameManager.Instance.ReadableImage.GetComponent<ReadableImage>().ReadableImages = readable.ReadableSprite;
+                GameManager.Instance.ReadableImage.SetActive(true);
+            }
     }
     public Item[] Inventory = new Item[5];
     private void Start()

@@ -5,18 +5,10 @@ using UnityEngine.UI;
 
 public class UsingItem : MonoBehaviour
 {
-    public void UseItem()
+    public void UseItemButton()
     {
         if (GameManager.movable) return;
-        Item i = InventoryManager.Instance.Inventory[transform.GetSiblingIndex()];
-        if (i is Consumable)
-        {
-            InventoryManager.Instance.OnUsingItem(transform.GetSiblingIndex());
-        }
-        else if(i is Readable readable)
-        {
-            GameManager.Instance.ReadableImage.GetComponent<ReadableImage>().ReadableImages = readable.ReadableSprite;
-            GameManager.Instance.ReadableImage.SetActive(true);
-        }
+        InventoryManager.Instance.OnUsingItem(transform.GetSiblingIndex());
+
     }
 }

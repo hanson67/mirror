@@ -12,7 +12,7 @@ public class BubbleChat : MonoBehaviour
 
     private void Update()
     {
-        UpdateBubble();
+        updateBubble();
     }
     public void showBubble(string text)
      {
@@ -25,7 +25,7 @@ public class BubbleChat : MonoBehaviour
                count++;
           }
      }
-    private void UpdateBubble()
+    private void updateBubble()
     {
         if(updatable)
             uiInstance.transform.position = Camera.main.WorldToScreenPoint(gameObject.transform.position + new Vector3(0, 3.5f, 0));

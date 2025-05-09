@@ -26,12 +26,14 @@ public class Player : Dummy
 
     Canvas PlayerCanvas;
     SpriteRenderer spriterenderer;
+    ShadowCaster2D shadowcaster;
     Transform hide_bar;
     void Start()
     {
         health = 3;
         PlayerCanvas = GetComponentInChildren<Canvas>();
         spriterenderer = GetComponent<SpriteRenderer>();
+        shadowcaster = GetComponent<ShadowCaster2D>();
         hide_bar = PlayerCanvas.gameObject.transform.Find("hide_bar");
     }
     private void OnEnable()
@@ -81,6 +83,7 @@ public class Player : Dummy
                 if (hide_elasped > hide_time)
                 {
                     spriterenderer.enabled = false;
+                    shadowcaster.enabled = false;
                     hide_bar.gameObject.SetActive(false);
                     hide = true;
                 }
@@ -94,6 +97,7 @@ public class Player : Dummy
         {
             hide_elasped = 0;
             spriterenderer.enabled = true;
+            shadowcaster.enabled = true;
             hide_bar.gameObject.SetActive(true);
             hide = false;
         }
