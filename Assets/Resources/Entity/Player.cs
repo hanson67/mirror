@@ -128,7 +128,6 @@ public class Player : Dummy
             if (hit)
             {
                 Item i = Resources.Load<Item>($"Item/{hit.transform.name}");
-                Debug.Log(i.name);
                 GameManager.Instance.DialogFrame.gameObject.SetActive(true);
                 GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{i.itemname}À» È¹µæÇÏ¿´½À´Ï´Ù.";
                 GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => endExamineDialog(i));
@@ -150,7 +149,6 @@ public class Player : Dummy
         {
             GameManager.movable = false;
             GameManager.Instance.UsingItemUI.gameObject.SetActive(true);
-            InventoryManager.Instance.OnUsingItem();
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {

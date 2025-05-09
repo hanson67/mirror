@@ -30,7 +30,6 @@ public class NPCInteraction : MonoBehaviour
     private void Update()
     {
         interAction();
-        Debug.DrawRay(transform.position, 3*Vector2.left);
     }
     void interAction()
     {
@@ -38,6 +37,7 @@ public class NPCInteraction : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right, 6.0f, LayerMask.GetMask("Player"));
         if (!hit)
         {
+
             if (npcState == NPCState.Idle)
                 npcState = NPCState.HasTalked;
                 BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
@@ -47,7 +47,7 @@ public class NPCInteraction : MonoBehaviour
         bubbleInterAction();
         if (npcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C))
         {
-            GameObject canvas = GameObject.Find("TestCanvas");
+            GameObject canvas = GameObject.Find("DialogueCanvas");
             uiInstance = Instantiate(uiPrefab, canvas.transform);
             uiInstance.transform.position = gameObject.transform.position + new Vector3(0, 2f, 0);
             if (uiInstance != null)
@@ -92,7 +92,7 @@ public class NPCInteraction : MonoBehaviour
     void StartDialogue()
     {
         Debug.Log("대화 시작");
-        DialogueManager.Instance.StartDialogue(dialogueId);
-        npcState = NPCState.HasTalked;
+        if (DialogueManager.Instance.StartDialogue(dialogueId))
+            npcState = NPCState.HasTalked;
     }
 }

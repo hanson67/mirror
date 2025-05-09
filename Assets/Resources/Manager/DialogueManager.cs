@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +12,8 @@ public class DialogueData
 {
     public int id;
     public string illustration;
+    public List<int> conditions;
+    public List<int> useditems;
     public List<string> sentences;
     public List<Choice> choices;
 }
@@ -18,6 +22,7 @@ public class DialogueData
 public class Choice
 {
     public string text;
+    public int[] conditions;
     public int nextDialogueId;
 }
 
@@ -55,6 +60,7 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Instance = this;
+            DontDestroyOnLoad(this.gameObject);
         }
     }
 
@@ -74,14 +80,29 @@ public class DialogueManager : MonoBehaviour
 
         DialogueList loadedData = JsonUtility.FromJson<DialogueList>(dialogueJsonFile.text);
         foreach (DialogueData dialogue in loadedData.dialogues)
+        {
             dialogueDict[dialogue.id] = dialogue;
+            //체크요망
+            StoryManager.Instance.dialogueRed[dialogue.id] = false;
+            StoryManager.Instance.itemUsed[dialogue.id] = false;
+        }
+
     }
-    public void StartDialogue(int dialogueId)
+    public bool StartDialogue(int dialogueId)
     {
         if (!dialogueDict.ContainsKey(dialogueId))
+            return false;
+        if (StoryManager.Instance.dialogueRed[dialogueId])
+            return true;
+        foreach (int condition in dialogueDict[dialogueId].conditions)
         {
-            Debug.LogError("존재하지 않는 아이디임, 아이디 번호 : " + dialogueId);
-            return;
+            if (!StoryManager.Instance.dialogueRed[condition])
+                return false;
+        }
+        foreach (int useditem in dialogueDict[dialogueId].useditems)
+        {
+            if (!StoryManager.Instance.itemUsed[useditem])
+                return false;
         }
         GameManager.movable = false;
 
@@ -112,10 +133,12 @@ public class DialogueManager : MonoBehaviour
         {
             ShowSentence();
         }
+        return true;
     }
 
     public void OnClickNext()
     {
+        Debug.Log(gameObject.name);
         DialogueData dialogue = dialogueDict[currentDialogueId];
         currentSentenceIndex++;
 
@@ -138,9 +161,20 @@ public class DialogueManager : MonoBehaviour
             dialogueText.GameObject().SetActive(true);
             alertText.GameObject().SetActive(false);
             dialogueName.GameObject().SetActive(true);
+            string mostart ="";
+            string moend = "";
+            if (sentence.Contains("<독백>"))
+            {
+                mostart = "<color=#888888><size=32>...";
+                moend = "</size></color>";
+                sentence = sentence.Replace("<독백>", "");
+                sentence = sentence.Replace("</독백>", "");
+            }
+            string content = "";
             foreach (char character in sentence)
             {
-                dialogueText.text += character;
+                content += character;
+                dialogueText.text = mostart + content + moend;
                 yield return new WaitForSeconds(0.05f);
             }
         } else if (textType == "alert")
@@ -148,6 +182,17 @@ public class DialogueManager : MonoBehaviour
             dialogueText.GameObject().SetActive(false);
             alertText.GameObject().SetActive(true);
             dialogueName.GameObject().SetActive(false);
+            if (sentence.Contains("<아이템>"))
+            {
+                string[] sentences = sentence.Split("<아이템>");
+                sentence = sentences[0];
+                string[] items = sentences[1].Split(",");
+                foreach (string item in items)
+                {
+                    Item i = Resources.Load<Item>($"Item/{item}");
+                    InventoryManager.Instance.OnGetItem(i);
+                }
+            }
             foreach (char character in sentence)
             {
                 alertText.text += character;
@@ -165,16 +210,12 @@ public class DialogueManager : MonoBehaviour
             string[] sentences = sentence.Split("</이름>");
             dialogueName.text = sentences[0];
             sentence = sentences[1];
-            sentence = sentence.Replace("<독백>", "<color=#888888><size=32>...");
-            sentence = sentence.Replace("</독백>", "</size></color>");
             StopAllCoroutines();
             StartCoroutine(TextRepeater(sentence, "text"));    
         }
         else
         {
             sentence = sentence.Replace("<알림>", "");
-            sentence = sentence.Replace("<독백>", "<color=#888888><size=32>...");
-            sentence = sentence.Replace("</독백>", "</size></color>");
             StopAllCoroutines();
             StartCoroutine(TextRepeater(sentence, "alert"));
         }
@@ -185,18 +226,37 @@ public class DialogueManager : MonoBehaviour
     {
         npcDialogueBox.SetActive(false);
         choicePanel.SetActive(true);
-
+        StoryManager.Instance.dialogueRed[dialogue.id] = true;
         if (dialogue.choices == null || dialogue.choices.Count == 0)
         {
             EndDialogue();
             return;
         }
-
         for (int i = 0; i < choiceButtons.Count; i++)
         {
             if (i < dialogue.choices.Count)
             {
                 int index = i;
+                bool back = false;
+                if (dialogue.choices[i].conditions != null)
+                {
+                    foreach (int condition in dialogue.choices[i].conditions)
+                    {
+                        if (!StoryManager.Instance.dialogueRed[condition])
+                        {
+                            back = true;
+                            break;
+                        }
+                    }
+                }
+                if(back)
+                {
+                    back = false;
+                    choiceButtons[i].onClick.RemoveAllListeners();
+                    choiceButtons[i].GetComponent<Image>().color = Color.red;
+                    continue;
+                }
+                choiceButtons[i].GetComponent<Image>().color = Color.white;
                 choiceButtons[i].gameObject.SetActive(true);
                 choiceButtons[i].GetComponentInChildren<Text>().text = dialogue.choices[index].text;
                 choiceButtons[i].onClick.RemoveAllListeners();

@@ -9,9 +9,9 @@ public class UsingItem : MonoBehaviour
     {
         if (GameManager.movable) return;
         Item i = InventoryManager.Instance.Inventory[transform.GetSiblingIndex()];
-        if (i is Story)
+        if (i is Consumable)
         {
-            Debug.Log("¿Ãµø");
+            InventoryManager.Instance.OnUsingItem(transform.GetSiblingIndex());
         }
         else if(i is Readable readable)
         {

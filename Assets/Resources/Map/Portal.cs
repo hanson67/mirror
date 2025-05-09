@@ -20,7 +20,6 @@ public class Portal : MonoBehaviour
             {
                 LoadingSceneManager.Instance.loadScene(gameObject.name);
             }
-            
         }
     }
 }
