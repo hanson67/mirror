@@ -839,6 +839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d4125d169cdd24dba0b0da98447f4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  empty: {fileID: 21300000, guid: 6b0027b247536c244a4f12f7c54ac24b, type: 3}
   Inventory:
   - {fileID: 0}
   - {fileID: 0}
@@ -1007,7 +1008,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 399d7bdd29da1e94dbc82e40335dd6c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 6
   hide_time: 0.5
   bullet: {fileID: 2960554747290333729, guid: decd196c0fe06f244a7b94690355e5c6, type: 3}
 --- !u!1 &181970920
@@ -11584,7 +11585,7 @@ SceneRoots:
   - {fileID: 314039703}
   - {fileID: 1266189207}
   - {fileID: 748734290}
-  - {fileID: 157778224}
   - {fileID: 1074058977}
+  - {fileID: 157778224}
   - {fileID: 1535244046}
   - {fileID: 1781278000}
