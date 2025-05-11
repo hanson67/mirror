@@ -21,15 +21,16 @@ public class NPCInteraction : MonoBehaviour
     }
 
     public int dialogueId;
+    public bool autoInteract;
     // public Text idleDialogueText;
     public string fixedDialogue;
     public float typeSpeed = 0.05f;
-    public GameObject uiPrefab;
+    public GameObject guideUI;
     private GameObject uiInstance;
 
     void Start()
     {
-        // idleDialogueText.text = "";
+        autoInteract?? StartDialogue(); : return;
     }
     private void Update()
     {
@@ -45,16 +46,13 @@ public class NPCInteraction : MonoBehaviour
                 npcState = NPCState.HasTalked;
             BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
             bubbleChat.removeBubble();
+            Destroy(uiInstance);
             return;
         }
         bubbleInterAction();
-        if (npcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C))
+        interactionGuide();
+        if (npcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C) && !autoInteract)
         {
-            GameObject canvas = GameObject.Find("DialogueCanvas");
-            uiInstance = Instantiate(uiPrefab, canvas.transform);
-            uiInstance.transform.position = gameObject.transform.position + new Vector3(0, 2f, 0);
-            if (uiInstance != null)
-                Destroy(uiInstance);
             StartDialogue();
         }
     }
@@ -69,6 +67,12 @@ public class NPCInteraction : MonoBehaviour
                 npcState = NPCState.Idle;
             }
         }
+    }
+    void interactionGuide()
+    {
+            GameObject canvas = GameObject.Find("DialogueCanvas");
+            uiInstance = Instantiate(guideUI, canvas.transform);
+            uiInstance.transform.position = Camera.main.WorldToScreenPoint(gameObject.transform.position + new Vector3(0, 2f, 0));
     }
     void StartDialogue()
     {
