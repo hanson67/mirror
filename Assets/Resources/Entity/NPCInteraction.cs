@@ -30,7 +30,7 @@ public class NPCInteraction : MonoBehaviour
 
     void Start()
     {
-        autoInteract?? StartDialogue(); : return;
+        if (autoInteract == true) StartDialogue();
     }
     private void Update()
     {

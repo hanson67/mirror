@@ -42,6 +42,7 @@ public class Player : Dummy
         VC.m_Follow = transform;
         if(LoadingSceneManager.Instance?.currentscene != null)
         {
+            Debug.Log(LoadingSceneManager.Instance?.currentscene);
             Transform obj = GameObject.Find(LoadingSceneManager.Instance.currentscene).transform;
             Vector3 pos = obj.childCount > 0 ? obj.GetChild(0).position : obj.position;
             GameManager.Instance.Player.transform.position = pos;
