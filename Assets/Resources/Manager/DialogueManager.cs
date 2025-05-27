@@ -12,7 +12,6 @@ using UnityEngine.UI;
 public class DialogueData
 {
     public int id;
-    public string illustration;
     public List<int> conditions;
     public List<int> useditems;
     public string debug;
@@ -148,7 +147,6 @@ public class DialogueManager : MonoBehaviour
 
     public void OnClickNext()
     {
-        Debug.Log(gameObject.name);
         DialogueData dialogue = dialogueDict[currentDialogueId];
         currentSentenceIndex++;
 

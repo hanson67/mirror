@@ -81,18 +81,30 @@ public class InventoryManager : MonoBehaviour
     }
     public void alertItem(int n)
     {
-        GameManager.Instance.UsingItemUI.SetActive(false);
+        GameManager.Instance.DialogUI.gameObject.SetActive(true);
         GameManager.Instance.DialogFrame.gameObject.SetActive(true);
+        GameManager.Instance.UsingItemUI.SetActive(false);
         if (Inventory[n] is Consumable con)
+        {
             GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{con.alert}";
-        GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => endAlertItem());
-        GameManager.movable = false;
+            if (con.illust)
+            {
+                if(con.alert == "") GameManager.Instance.DialogFrame.gameObject.SetActive(false);
+                GameManager.Instance.DialogIllust.GetComponent<Image>().sprite = con.illust;
+                GameManager.Instance.DialogIllust.gameObject.SetActive(true);
+            }
+            GameManager.Instance.DialogButton.GetComponent<Button>().onClick.AddListener(() => endAlertItem(con.scenetogo));
+            GameManager.movable = false;
+        }
     }
-    void endAlertItem()
+    void endAlertItem(string scene)
     {
+        GameManager.Instance.DialogUI.gameObject.SetActive(false);
         GameManager.Instance.DialogFrame.gameObject.SetActive(false);
-        GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.RemoveAllListeners();
+        GameManager.Instance.DialogIllust.gameObject.SetActive(false);
+        GameManager.Instance.DialogButton.GetComponent<Button>().onClick.RemoveAllListeners();
         GameManager.movable = true;
+        if(scene != "")LoadingSceneManager.Instance.loadScene(scene);
     }
     public void updateInventory(Item item)
     {

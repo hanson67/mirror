@@ -55,7 +55,7 @@ public class Player : Dummy
     }
     void Update()
     {
-        useItem();
+        isUseItem();
         if (!GameManager.movable) return;
         Hide();
         Attack();
@@ -148,7 +148,7 @@ public class Player : Dummy
         GameManager.movable = true;
         InventoryManager.Instance.OnGetItem(item);
     }
-    void useItem()
+    void isUseItem()
     {
         if (Input.GetKeyDown(KeyCode.X) & GameManager.movable)
         {

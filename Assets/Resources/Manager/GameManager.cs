@@ -42,7 +42,10 @@ public class GameManager : MonoBehaviour
     public GameObject health_bar;
     public GameObject inventory;
     public GameObject hittedUIparticle;
+    public GameObject DialogUI;
+    public GameObject DialogButton;
     public GameObject DialogFrame;
+    public GameObject DialogIllust;
     public GameObject UsingItemUI;
     public GameObject ReadableImage;
     private void Start()

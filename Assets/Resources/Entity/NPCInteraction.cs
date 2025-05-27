@@ -14,14 +14,15 @@ public class NPCInteraction : MonoBehaviour
     }
 
     private NPCState npcState = NPCState.ReadyToTalk;
-
-    public void setNpcState(NPCState n)
+    
+    public NPCState NpcState
     {
-        npcState = n;
-    }
-
+        get { return npcState; }
+        set { npcState = value; }
+    } 
     public int dialogueId;
     public bool autoInteract;
+    public float timeoffset;
     // public Text idleDialogueText;
     public string fixedDialogue;
     public float typeSpeed = 0.05f;
@@ -30,7 +31,7 @@ public class NPCInteraction : MonoBehaviour
 
     void Start()
     {
-        if (autoInteract == true) StartDialogue();
+        if (autoInteract == true) StartCoroutine(StartDialogue());
     }
     private void Update()
     {
@@ -42,42 +43,46 @@ public class NPCInteraction : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.right, 6.0f, LayerMask.GetMask("Player"));
         if (!hit)
         {
-            if (npcState == NPCState.Idle || npcState == NPCState.Talking)
-                npcState = NPCState.HasTalked;
+            if (NpcState == NPCState.Idle || NpcState == NPCState.Talking)
+                NpcState = NPCState.HasTalked;
             BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
-            bubbleChat.removeBubble();
+            bubbleChat?.removeBubble();
             Destroy(uiInstance);
             return;
         }
         bubbleInterAction();
-        interactionGuide();
-        if (npcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C) && !autoInteract)
+        //interactionGuide();
+        if (NpcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C) && !autoInteract)
         {
-            StartDialogue();
+            StartCoroutine(StartDialogue());
         }
     }
     void bubbleInterAction()
     {
-        if (npcState == NPCState.HasTalked)
+        if (NpcState == NPCState.HasTalked)
         {
             if (fixedDialogue != null)
             {
                 BubbleChat bubbleChat = gameObject.GetComponent<BubbleChat>();
-                bubbleChat.showBubble(fixedDialogue);
-                npcState = NPCState.Idle;
+                bubbleChat?.showBubble(fixedDialogue);
+                NpcState = NPCState.Idle;
             }
         }
     }
     void interactionGuide()
     {
             GameObject canvas = GameObject.Find("DialogueCanvas");
+            
             uiInstance = Instantiate(guideUI, canvas.transform);
             uiInstance.transform.position = Camera.main.WorldToScreenPoint(gameObject.transform.position + new Vector3(0, 2f, 0));
     }
-    void StartDialogue()
+    IEnumerator StartDialogue()
     {
         Debug.Log("대화 시작");
+        GameManager.movable = false;
+        yield return new WaitForSeconds(timeoffset);
+        GameManager.movable = true;
         if (DialogueManager.Instance.StartDialogue(dialogueId))
-            npcState = NPCState.Talking;
+            NpcState = NPCState.Talking;
     }
 }
