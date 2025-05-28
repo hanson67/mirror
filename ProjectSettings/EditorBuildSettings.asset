@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/urban_entrance.unity
     guid: cd4223b3912d2374387350c571332242
+  - enabled: 1
+    path: Assets/Scenes/urban.unity
+    guid: 4a737d3a2a40d934490849d5d999dddf
   m_configObjects: {}
