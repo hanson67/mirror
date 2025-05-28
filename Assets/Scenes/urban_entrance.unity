@@ -452,7 +452,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1778553217}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &230355912
 MonoBehaviour:
@@ -468,7 +468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueId: 6
   autoInteract: 1
-  timeoffset: 3
+  delay: 2
   fixedDialogue: 
   typeSpeed: 0.05
   guideUI: {fileID: 0}
@@ -1675,7 +1675,6 @@ Transform:
   - {fileID: 1125790506}
   - {fileID: 625086044}
   - {fileID: 63774990}
-  - {fileID: 230355911}
   - {fileID: 1374635371}
   - {fileID: 1403586645}
   - {fileID: 1053678814}
@@ -1974,3 +1973,4 @@ SceneRoots:
   - {fileID: 522894754}
   - {fileID: 1778553217}
   - {fileID: 1454049866}
+  - {fileID: 230355911}

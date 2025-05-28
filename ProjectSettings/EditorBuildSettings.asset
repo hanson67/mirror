@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/urban.unity
     guid: 4a737d3a2a40d934490849d5d999dddf
+  - enabled: 1
+    path: Assets/Scenes/way_to_hill.unity
+    guid: 9c1ca288e063d374887804e025f91766
   m_configObjects: {}

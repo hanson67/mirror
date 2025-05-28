@@ -16,6 +16,7 @@ public class Player : Dummy
     public float speed;
     public float hide_time;
     public GameObject bullet;
+    public Animator anim;
 
     bool hide;
     public bool GetHide()
@@ -31,6 +32,7 @@ public class Player : Dummy
     void Start()
     {
         health = 3;
+        anim = GetComponent<Animator>();
         PlayerCanvas = GetComponentInChildren<Canvas>();
         spriterenderer = GetComponent<SpriteRenderer>();
         shadowcaster = GetComponent<ShadowCaster2D>();
@@ -50,20 +52,26 @@ public class Player : Dummy
     }
     void FixedUpdate()
     {
-        if (!hide & GameManager.movable)
-            Move();
+        Move();
     }
     void Update()
     {
         isUseItem();
-        if (!GameManager.movable) return;
+        if (!GameManager.Instance.movable) return;
         Hide();
         Attack();
         Examine();
     }
     void Move()
     {
+        if (hide || !GameManager.Instance.movable)
+        {
+            anim.SetBool("isWalk", false);
+            return;
+        }
         float movedir = Input.GetAxisRaw("Horizontal");
+        if (movedir != 0) anim.SetBool("isWalk", true);
+        else anim.SetBool("isWalk", false);
         if (movedir < 0) spriterenderer.flipX = true;
         else if (movedir > 0) spriterenderer.flipX = false;
         transform.position += new Vector3(movedir, 0, 0) * speed * Time.deltaTime;
@@ -127,7 +135,7 @@ public class Player : Dummy
     }
     void Examine()
     {
-        if (Input.GetKeyDown(KeyCode.Z) & GameManager.movable)
+        if (Input.GetKeyDown(KeyCode.Z) & GameManager.Instance.movable)
         {
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x - 1, transform.position.y), Vector2.right, 2.0f, LayerMask.GetMask("Exam"));
             if (hit)
@@ -136,7 +144,7 @@ public class Player : Dummy
                 GameManager.Instance.DialogFrame.gameObject.SetActive(true);
                 GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{i.itemname}À» È¹µæÇÏ¿´½À´Ï´Ù.";
                 GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => endExamineDialog(i));
-                GameManager.movable = false;
+                GameManager.Instance.movable = false;
                 hit.transform.gameObject.layer = LayerMask.GetMask("Default");
             }
         }
@@ -145,19 +153,19 @@ public class Player : Dummy
     {
         GameManager.Instance.DialogFrame.gameObject.SetActive(false);
         GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.RemoveAllListeners();
-        GameManager.movable = true;
+        GameManager.Instance.movable = true;
         InventoryManager.Instance.OnGetItem(item);
     }
     void isUseItem()
     {
-        if (Input.GetKeyDown(KeyCode.X) & GameManager.movable)
+        if (Input.GetKeyDown(KeyCode.X) & GameManager.Instance.movable)
         {
-            GameManager.movable = false;
+            GameManager.Instance.movable = false;
             GameManager.Instance.UsingItemUI.gameObject.SetActive(true);
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            GameManager.movable = true;
+            GameManager.Instance.movable = true;
             GameManager.Instance.UsingItemUI.SetActive(false);
             GameManager.Instance.ReadableImage.SetActive(false);
         }

@@ -22,7 +22,7 @@ public class NPCInteraction : MonoBehaviour
     } 
     public int dialogueId;
     public bool autoInteract;
-    public float timeoffset;
+    public float delay;
     // public Text idleDialogueText;
     public string fixedDialogue;
     public float typeSpeed = 0.05f;
@@ -31,7 +31,7 @@ public class NPCInteraction : MonoBehaviour
 
     void Start()
     {
-        if (autoInteract == true) StartCoroutine(StartDialogue());
+        if (autoInteract == true) StartDialogue();
     }
     private void Update()
     {
@@ -52,9 +52,13 @@ public class NPCInteraction : MonoBehaviour
         }
         bubbleInterAction();
         //interactionGuide();
-        if (NpcState == NPCState.ReadyToTalk && Input.GetKeyDown(KeyCode.C) && !autoInteract)
+        if (NpcState == NPCState.ReadyToTalk)
         {
-            StartCoroutine(StartDialogue());
+            if (StoryManager.Instance.dialogueRed[dialogueId] == true) NpcState = NPCState.HasTalked;
+            if (Input.GetKeyDown(KeyCode.C) && !autoInteract)
+            {
+                StartDialogue();
+            }
         }
     }
     void bubbleInterAction()
@@ -76,13 +80,10 @@ public class NPCInteraction : MonoBehaviour
             uiInstance = Instantiate(guideUI, canvas.transform);
             uiInstance.transform.position = Camera.main.WorldToScreenPoint(gameObject.transform.position + new Vector3(0, 2f, 0));
     }
-    IEnumerator StartDialogue()
+    void StartDialogue()
     {
         Debug.Log("대화 시작");
-        GameManager.movable = false;
-        yield return new WaitForSeconds(timeoffset);
-        GameManager.movable = true;
-        if (DialogueManager.Instance.StartDialogue(dialogueId))
+        if (DialogueManager.Instance.StartDialogue(dialogueId, delay))
             NpcState = NPCState.Talking;
     }
 }

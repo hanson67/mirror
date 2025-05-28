@@ -19,14 +19,14 @@ public class ReadableImage : MonoBehaviour
     }
     public void NextImage()
     {
-        if ( CurrentImangeIndex < ReadableImages.Length)
+        if ( CurrentImangeIndex < ReadableImages?.Length)
         {
             GetComponent<Image>().sprite = ReadableImages[CurrentImangeIndex];
             CurrentImangeIndex ++;
         }
         else
         {
-            GameManager.movable = true;
+            GameManager.Instance.movable = true;
             GameManager.Instance.UsingItemUI.SetActive(false);
             GameManager.Instance.ReadableImage.SetActive(false);
         }

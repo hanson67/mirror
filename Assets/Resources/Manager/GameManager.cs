@@ -37,7 +37,19 @@ public class GameManager : MonoBehaviour
         HittedHandler?.Invoke();
     }
     public Player Player;
-    public static bool movable = true;
+
+    private bool _movable = true;
+    public bool movable
+    {
+        get
+        {
+            return _movable;
+        }
+        set
+        {
+            _movable = value;
+        }
+    }
     [Header("=== UI ===")]
     public GameObject health_bar;
     public GameObject inventory;
@@ -48,6 +60,8 @@ public class GameManager : MonoBehaviour
     public GameObject DialogIllust;
     public GameObject UsingItemUI;
     public GameObject ReadableImage;
+    public GameObject UseIllust;
+    public GameObject Shadow;
     private void Start()
     {
         Player = FindAnyObjectByType<Player>();

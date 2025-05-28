@@ -95,15 +95,15 @@ public class DialogueManager : MonoBehaviour
         GameManager.Instance.DialogFrame.gameObject.SetActive(true);
         GameManager.Instance.DialogFrame.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{dialogueDict[dialogueId].debug}";
         GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.AddListener(() => endAlertDebug());
-        GameManager.movable = false;
+        GameManager.Instance.movable = false;
     }
     void endAlertDebug()
     {
         GameManager.Instance.DialogFrame.gameObject.SetActive(false);
         GameManager.Instance.DialogFrame.GetComponent<Button>().onClick.RemoveAllListeners();
-        GameManager.movable = true;
+        GameManager.Instance.movable = true;
     }
-    public bool StartDialogue(int dialogueId)
+    public bool StartDialogue(int dialogueId, float delay)
     {
         if (!dialogueDict.ContainsKey(dialogueId))
             return false;
@@ -125,12 +125,18 @@ public class DialogueManager : MonoBehaviour
                 return false;
             }
         }
-        GameManager.movable = false;
+        GameManager.Instance.movable = false;
         illustrationImage.gameObject.SetActive(false);
         currentDialogueId = dialogueId;
         currentSentenceIndex = 0;
 
         DialogueData dialogue = dialogueDict[dialogueId];
+        StartCoroutine(DialogueDelay(dialogue, delay));
+        return true;
+    }
+    IEnumerator DialogueDelay(DialogueData dialogue, float delay)
+    {
+        yield return new WaitForSeconds(delay);
         dialoguePanel.SetActive(true);
         npcDialogueBox.SetActive(true);
         choicePanel.SetActive(false);
@@ -142,7 +148,6 @@ public class DialogueManager : MonoBehaviour
         {
             ShowSentence();
         }
-        return true;
     }
 
     public void OnClickNext()
@@ -292,13 +297,13 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            StartDialogue(nextId);
+            StartDialogue(nextId, 0);
         }
     }
 
     void EndDialogue()
     {
         dialoguePanel.SetActive(false);
-        GameManager.movable = true;
+        GameManager.Instance.movable = true;
     }
 }

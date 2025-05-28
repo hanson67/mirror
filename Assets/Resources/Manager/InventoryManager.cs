@@ -90,20 +90,20 @@ public class InventoryManager : MonoBehaviour
             if (con.illust)
             {
                 if(con.alert == "") GameManager.Instance.DialogFrame.gameObject.SetActive(false);
-                GameManager.Instance.DialogIllust.GetComponent<Image>().sprite = con.illust;
-                GameManager.Instance.DialogIllust.gameObject.SetActive(true);
+                GameManager.Instance.UseIllust.GetComponent<Image>().sprite = con.illust;
+                GameManager.Instance.UseIllust.gameObject.SetActive(true);
             }
             GameManager.Instance.DialogButton.GetComponent<Button>().onClick.AddListener(() => endAlertItem(con.scenetogo));
-            GameManager.movable = false;
+            GameManager.Instance.movable = false;
         }
     }
     void endAlertItem(string scene)
     {
         GameManager.Instance.DialogUI.gameObject.SetActive(false);
         GameManager.Instance.DialogFrame.gameObject.SetActive(false);
-        GameManager.Instance.DialogIllust.gameObject.SetActive(false);
+        GameManager.Instance.UseIllust.gameObject.SetActive(false);
         GameManager.Instance.DialogButton.GetComponent<Button>().onClick.RemoveAllListeners();
-        GameManager.movable = true;
+        GameManager.Instance.movable = true;
         if(scene != "")LoadingSceneManager.Instance.loadScene(scene);
     }
     public void updateInventory(Item item)

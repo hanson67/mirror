@@ -35,6 +35,22 @@ public class LoadingSceneManager : MonoBehaviour
     Image progressbar;
     public void loadScene(string scenename)
     {
+        StartCoroutine(Fade_LoadScene(scenename));
+    }
+    IEnumerator Fade_LoadScene(string scenename)
+    {
+        GameManager.Instance.movable = false;
+        GameObject shadow = GameManager.Instance.Shadow;
+        shadow.SetActive(true);
+        Color color = Color.black;
+        float lerpelasped = 0;
+        while (lerpelasped <= 1)
+        {
+            color.a = Mathf.Lerp(0, 1, lerpelasped);
+            shadow.GetComponent<Image>().color = color;
+            lerpelasped += Time.deltaTime;
+            yield return null;
+        }
         currentscene = SceneManager.GetActiveScene().name;
         nextscene = scenename;
         SceneManager.LoadScene("Loading");
@@ -42,10 +58,6 @@ public class LoadingSceneManager : MonoBehaviour
         {
             GameManager.Instance.transform.GetChild(i).gameObject.SetActive(false);
         }
-        StartCoroutine(loadScene());
-    }
-    IEnumerator loadScene()
-    {
         yield return null;
         AsyncOperation op = SceneManager.LoadSceneAsync(nextscene);
         op.allowSceneActivation = false;
@@ -76,5 +88,15 @@ public class LoadingSceneManager : MonoBehaviour
         {
             GameManager.Instance.transform.GetChild(i).gameObject.SetActive(true);
         }
+        lerpelasped = 0;
+        while (lerpelasped <= 1)
+        {
+            color.a = Mathf.Lerp(1,0 , lerpelasped);
+            shadow.GetComponent<Image>().color = color;
+            lerpelasped += Time.deltaTime;
+            yield return null;
+        }
+        shadow.SetActive(false);
+        GameManager.Instance.movable = true;
     }
 }

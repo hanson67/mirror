@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd4cf556ca3159d43b56754d326e54c8, type: 3}
+  m_Script: {fileID: 11500000, guid: 877c48f26d9e06b41b20282d3b593683, type: 3}
   m_Name: file
   m_EditorClassIdentifier: 
-  id: 1
+  id: 2
   itemname: file
-  sprite: {fileID: 21300000, guid: 10ec2f177da4d3b41995c008186913f3, type: 3}
-  ReadableSprite:
-  - {fileID: 21300000, guid: 643348d0a9c9a53489fe9cedbfff1eb3, type: 3}
-  - {fileID: 21300000, guid: 643348d0a9c9a53489fe9cedbfff1eb3, type: 3}
+  sprite: {fileID: 21300000, guid: 921b424c71a8b7847adc05001f48e26a, type: 3}
+  scenetogo: urban_entrance
+  alert: 
+  illust: {fileID: 21300000, guid: d7b75b3068bffcb47a0ee5a33aa28901, type: 3}

@@ -7,7 +7,7 @@ public class UsingItem : MonoBehaviour
 {
     public void UseItemButton()
     {
-        if (GameManager.movable) return;
+        if (GameManager.Instance.movable) return;
         InventoryManager.Instance.OnUsingItem(transform.GetSiblingIndex());
 
     }

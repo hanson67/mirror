@@ -12,7 +12,7 @@ public class Portal : MonoBehaviour
     }
     void portalEnter()
     {
-        if (!GameManager.movable) return;
+        if (!GameManager.Instance.movable) return;
         if (Input.GetKeyDown(KeyCode.C) || !press)
         {
             Vector2 pos = new Vector2(transform.position.x - 0.5f, transform.position.y+0.65f);
