@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class NPCInteraction : MonoBehaviour
@@ -28,10 +29,9 @@ public class NPCInteraction : MonoBehaviour
     public float typeSpeed = 0.05f;
     public GameObject guideUI;
     private GameObject uiInstance;
-
     void Start()
     {
-        if (autoInteract == true) StartDialogue();
+        if (autoInteract == true) LoadingSceneManager.Instance.SceneLoadedHandler = StartDialogue;
     }
     private void Update()
     {

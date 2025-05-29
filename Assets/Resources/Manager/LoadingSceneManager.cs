@@ -2,6 +2,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class LoadingSceneManager : MonoBehaviour
 {
@@ -31,34 +32,40 @@ public class LoadingSceneManager : MonoBehaviour
     }
     public string currentscene;
     public string nextscene;
-    
+    [Header("=== UI ===")]
+    public GameObject Shadow;
     Image progressbar;
+    public Action SceneLoadedHandler;
+    public void OnSceneLoaded()
+    {
+        SceneLoadedHandler?.Invoke();
+    }
     public void loadScene(string scenename)
     {
         StartCoroutine(Fade_LoadScene(scenename));
     }
     IEnumerator Fade_LoadScene(string scenename)
     {
-        GameManager.Instance.movable = false;
-        GameObject shadow = GameManager.Instance.Shadow;
-        shadow.SetActive(true);
+        if(GameManager.Instance != null) GameManager.Instance.movable = false;
         Color color = Color.black;
+        Shadow.SetActive(true);
         float lerpelasped = 0;
         while (lerpelasped <= 1)
         {
             color.a = Mathf.Lerp(0, 1, lerpelasped);
-            shadow.GetComponent<Image>().color = color;
+            Shadow.GetComponent<Image>().color = color;
             lerpelasped += Time.deltaTime;
             yield return null;
         }
-        currentscene = SceneManager.GetActiveScene().name;
+        currentscene = SceneManager.GetActiveScene().name; //로딩창 꾸미기
         nextscene = scenename;
         SceneManager.LoadScene("Loading");
-        for (int i = 0; i < GameManager.Instance.transform.childCount; i++)
+        yield return null;
+        Shadow.SetActive(false);
+        for (int i = 0; i < GameManager.Instance?.transform.childCount; i++)
         {
             GameManager.Instance.transform.GetChild(i).gameObject.SetActive(false);
         }
-        yield return null;
         AsyncOperation op = SceneManager.LoadSceneAsync(nextscene);
         op.allowSceneActivation = false;
         progressbar = GameObject.Find("loadingbar").GetComponent<Image>();
@@ -88,15 +95,17 @@ public class LoadingSceneManager : MonoBehaviour
         {
             GameManager.Instance.transform.GetChild(i).gameObject.SetActive(true);
         }
+        Shadow.SetActive(true);
         lerpelasped = 0;
         while (lerpelasped <= 1)
         {
             color.a = Mathf.Lerp(1,0 , lerpelasped);
-            shadow.GetComponent<Image>().color = color;
+            Shadow.GetComponent<Image>().color = color;
             lerpelasped += Time.deltaTime;
             yield return null;
         }
-        shadow.SetActive(false);
+        Shadow.SetActive(false);
         GameManager.Instance.movable = true;
+        OnSceneLoaded();
     }
 }

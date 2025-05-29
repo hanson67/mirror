@@ -8,6 +8,7 @@ public class BubbleChat : MonoBehaviour
     private int count = 0;
     private bool updatable;
     public GameObject bubblePrefab;
+    public float yoffset;
     private GameObject uiInstance;
 
     private void Update()
@@ -28,7 +29,7 @@ public class BubbleChat : MonoBehaviour
     private void updateBubble()
     {
         if(updatable)
-            uiInstance.transform.position = Camera.main.WorldToScreenPoint(gameObject.transform.position + new Vector3(0, 3.5f, 0));
+            uiInstance.transform.position = Camera.main.WorldToScreenPoint(gameObject.transform.position + new Vector3(0, 3.5f+ yoffset, 0));
     }
 
      public void removeBubble()

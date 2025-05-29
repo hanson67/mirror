@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class Player : Dummy
 {
@@ -45,9 +44,11 @@ public class Player : Dummy
         if(LoadingSceneManager.Instance?.currentscene != null)
         {
             Debug.Log(LoadingSceneManager.Instance?.currentscene);
-            Transform obj = GameObject.Find(LoadingSceneManager.Instance.currentscene).transform;
-            Vector3 pos = obj.childCount > 0 ? obj.GetChild(0).position : obj.position;
-            GameManager.Instance.Player.transform.position = pos;
+            Transform obj = GameObject.Find(LoadingSceneManager.Instance.currentscene)?.transform;
+            if(obj) {
+                Vector3 pos = obj.childCount > 0 ? obj.GetChild(0).position : obj.position;
+                GameManager.Instance.Player.transform.position = pos;
+            }
         }
     }
     void FixedUpdate()
