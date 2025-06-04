@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using UnityEngine.U2D;
 
 public class LoadingSceneManager : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class LoadingSceneManager : MonoBehaviour
     [Header("=== UI ===")]
     public GameObject Shadow;
     Image progressbar;
+    Image loadedillust;
     public Action SceneLoadedHandler;
     public void OnSceneLoaded()
     {
@@ -43,6 +45,11 @@ public class LoadingSceneManager : MonoBehaviour
     public void loadScene(string scenename)
     {
         StartCoroutine(Fade_LoadScene(scenename));
+    }
+    Color AlphaColor(float alpha)
+    {
+        Color color = Color.white; color.a = alpha;
+        return color;
     }
     IEnumerator Fade_LoadScene(string scenename)
     {
@@ -61,6 +68,17 @@ public class LoadingSceneManager : MonoBehaviour
         nextscene = scenename;
         SceneManager.LoadScene("Loading");
         yield return null;
+        loadedillust = GameObject.Find("loadedillust").GetComponent<Image>();
+        Sprite sprite = Resources.Load<Sprite>($"Illustrations/loadedillust/{nextscene}");
+        if (sprite != null)
+        {
+            loadedillust.sprite = sprite;
+            loadedillust.color = AlphaColor(1);
+        }
+        else
+        {
+            loadedillust.color = AlphaColor(0);
+        }
         Shadow.SetActive(false);
         for (int i = 0; i < GameManager.Instance?.transform.childCount; i++)
         {
